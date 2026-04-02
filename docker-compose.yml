@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ai-finance-network
+
+  ml-service:
+    build:
+      context: ./ML_Service
+      dockerfile: Dockerfile
+    container_name: ml-service
+    ports:
+      - "5001:5001"
+    restart: on-failure
+    networks:
+      - ai-finance-network
+
+  backend-api:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: backend-api
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGO_URI=mongodb://mongodb:27017/finance_tracker
+      - ML_API_URL=http://ml-service:5001/api/ml
+      - JWT_SECRET=super_secret_jwt_signature_42
+    depends_on:
+      - mongodb
+      - ml-service
+    restart: on-failure
+    networks:
+      - ai-finance-network
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: frontend-ui
+    ports:
+      - "80:80"
+    depends_on:
+      - backend-api
+    restart: on-failure
+    networks:
+      - ai-finance-network
+
+networks:
+  ai-finance-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

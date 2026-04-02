@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  :root {
+    --background: 0.13 0.028 261; /* Dark Slate / gray-900 */
+    --foreground: 0.98 0 0; /* Near White */
+    
+    --card: 0.18 0.025 260;
+    --card-foreground: 0.98 0 0;
+    
+    --popover: 0.18 0.025 260;
+    --popover-foreground: 0.98 0 0;
+    
+    --primary: 0.52 0.2 285; /* Indigo/Violet Gradient base */
+    --primary-foreground: 0.98 0 0;
+    
+    --secondary: 0.27 0.04 260;
+    --secondary-foreground: 0.98 0 0;
+    
+    --muted: 0.27 0.04 260;
+    --muted-foreground: 0.65 0.01 260;
+    
+    --accent: 0.27 0.04 260;
+    --accent-foreground: 0.98 0 0;
+    
+    --destructive: 0.6 0.2 25; /* Red */
+    --destructive-foreground: 0.98 0 0;
+
+    --success: 0.65 0.16 150; /* Green */
+    --success-foreground: 0.98 0 0;
+
+    --warning: 0.75 0.15 80; /* Yellow */
+    --warning-foreground: 0.1 0 0;
+
+    --border: 0.27 0.04 260;
+    --input: 0.27 0.04 260;
+    --ring: 0.52 0.2 285;
+    
+    --radius: 1rem; /* rounded-2xl */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/30;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Glassmorphism utility */
+.glass {
+  @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-lg;
+}
+
+/* Custom chart tooltips */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  @apply !bg-card !border-border !rounded-lg !shadow-xl !text-foreground;
+}
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
