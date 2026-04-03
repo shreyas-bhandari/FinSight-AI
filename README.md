@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="https://img.icons8.com/color/150/000000/activity.png" alt="FinSight AI Logo" width="100"/>
   <h1>🌍 FinSight AI - Intelligent Personal Finance Tracker</h1>
   <p><em>“Not just tracking money — understanding it.”</em></p>
   <p><strong>Experience the next generation of financial tracking with predictive ML insights, dynamic goal allocation, and real-time visualization.</strong></p>
@@ -18,6 +17,8 @@
     <img src="https://img.shields.io/badge/Docker-Containerized-2496ED.svg?style=for-the-badge&logo=docker" alt="Docker" />
     <img src="https://img.shields.io/badge/MongoDB-Database-47A248.svg?style=for-the-badge&logo=mongodb" alt="MongoDB" />
   </p>
+
+  <img src="./Frontend/src/assets/hero.png" alt="FinSight AI Dashboard Preview" width="100%" style="border-radius: 10px; margin-top: 20px;" />
 </div>
 
 ---
@@ -33,13 +34,84 @@ FinSight AI isn't just a budget planner—it is an intelligent system adapting t
 
 ---
 
-## 🏗️ System Architecture
-Built as a highly scalable microservice application.
-1. **Frontend**: *React 19 + TypeScript + Vite + TailwindCSS* (Beautiful, ultra-responsive UI)
-2. **Backend**: *Node.js + Express.js* (Handles user routing, authentications, CRUD operations)
-3. **ML Service**: *Python + Flask* (Processes AI predictions and behavior analytics)
-4. **Database**: *MongoDB* (Persistent data layer)
-5. **Gateway & Delivery**: NGINX routing via *Docker Compose*
+## 🏗️ Technical Architecture
+
+FinSight AI is designed using a modern, containerized microservices architecture to ensure scalability, separation of concerns, and robust performance. 
+
+### ⚙️ High-Level Diagram
+```mermaid
+graph TD
+    Client([Client Browser])
+    Proxy[NGINX Reverse Proxy\nDocker Gateway]
+    
+    subgraph Frontend Subsystem
+        React[React 19 Frontend UI\nVite + TailwindCSS]
+    end
+    
+    subgraph Backend Subsystem
+        NodeAPI[Node.js + Express Backend\nCore API Gateway]
+    end
+    
+    subgraph AI/ML Subsystem
+        MLService[Python Flask ML Service\nAnalytics & Predictions]
+    end
+
+    subgraph Data Persistence
+        Mongo[(MongoDB Database)]
+    end
+
+    Client -->|HTTP/HTTPS| Proxy
+    Proxy -->|Route: /| React
+    Proxy -->|Route: /api| NodeAPI
+    NodeAPI -->|REST| MLService
+    NodeAPI -->|Mongoose| Mongo
+```
+
+### 🧩 Core Components
+
+1. **Frontend UI (React 19 + TypeScript)**
+   - **Framework:** Vite for blazing-fast HMR and optimized builds.
+   - **Styling:** TailwindCSS for utility-first styling and a responsive UI system.
+   - **Data Flow:** Dynamic state management combined with Axios for declarative API fetching.
+   - **Role:** Handles user authentication flows, dynamic charts (`recharts`), and rich dashboards.
+
+2. **Backend API (Node.js + Express.js)**
+   - **Architecture:** Controller-Service-Model pattern for maintainable business logic.
+   - **Authentication:** JWT (JSON Web Tokens) with `bcryptjs` password hashing.
+   - **Role:** Acts as the central CRUD hub for transactions, goals, and user profiles. Invokes the ML service internally for generating smart insights.
+
+3. **Machine Learning Microservice (Python + Flask)**
+   - **Framework:** Lightweight Flask server for serving predictions via REST.
+   - **Environment:** Isolated Python environment to handle data science packages.
+   - **Role:** Receives sanitized transaction data from the Node API, processes trend analysis, calculates priority-based algorithmic goal distribution, and returns JSON insights.
+
+4. **Database Layer (MongoDB)**
+   - **Schema Design:** Mongoose ORM models enforcing strict relational schemas across Users, Transactions, and Savings Goals.
+   - **Deployment:** Containerized single-node Mongo instance in development environments, fully compatible with MongoDB Atlas for production.
+
+5. **Deployment & Orchestration (Docker)**
+   - **Role:** Docker Compose manages multi-container application scaling.
+   - **Reverse Proxy:** NGINX handles port mappings and maps external gateway requests directly to the correct internal container without exposing microservices to the public internet directly.
+
+### 📂 Directory Structure
+
+```text
+FinSight-AI/
+├── 📁 Backend/               # Node.js + Express API services
+│   ├── models/             # Mongoose schemas (User, Transaction)
+│   ├── routes/             # Express API endpoints
+│   └── controllers/        # Business logic & ML invocations
+├── 📁 Frontend/              # React 19 + TypeScript UI
+│   ├── src/
+│   │   ├── components/     # Reusable UI elements (charts, tables)
+│   │   ├── pages/          # Dashboards and auth pages
+│   │   └── store/          # React State Management
+├── 📁 ML_Service/            # Python Flask microservice
+│   ├── app.py              # ML REST endpoints
+│   └── predictor.py        # Trend forecasting logic
+├── 🐳 docker-compose.yml     # Multi-container orchestration
+└── 📄 README.md              # Project documentation
+```
 
 ---
 
